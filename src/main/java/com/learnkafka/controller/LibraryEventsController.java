@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -24,7 +25,7 @@ public class LibraryEventsController {
     LibraryEventProducer libraryEventProducer;
 
     @PostMapping("/v1/libraryEvent")
-    public ResponseEntity<LibraryEvent> postLibraryEvent(@RequestBody LibraryEvent libraryEvent) throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
+    public ResponseEntity<LibraryEvent> postLibraryEvent(@RequestBody @Valid LibraryEvent libraryEvent) throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
 
         //invoke kafka producer
         log.info("before sendLibraryEvent");
@@ -41,7 +42,7 @@ public class LibraryEventsController {
     @PutMapping("/v1/libraryEvent")
     public ResponseEntity<?> putLibraryEvent(@RequestBody LibraryEvent libraryEvent) throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
 
-        if(libraryEvent.getLibraryEventId()==null){
+        if (libraryEvent.getLibraryEventId() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please pass libraryEventId");
         }
         libraryEvent.setLibraryEventType(LibraryEventType.UPDATE);
